@@ -4,28 +4,29 @@
 
 ### Your answer
 
-In my Ex7 run (session sess_a382a2149fc1), the planner's second
-subgoal was sg_2 "commit the booking under policy rules" with
-assigned_half: "structured". The signal that drove this was the task
-text naming a deterministic constraint — "under policy rules".
-Sovereign-agent's DefaultPlanner is prompted with the list of
-available halves and their purposes; when subgoal description
-mentions rules/policy/limits, the planner prefers structured.
+In my Ex7 run (session sess_94fd867e614b), the bridge completed in 2
+rounds with "structured confirmed in round 2". The handoff decision
+works because the DefaultPlanner assigns subgoals to halves based on
+the nature of the work described: open-ended research goes to the loop
+half (which can call tools iteratively), while commitment/confirmation
+goes to the structured half (which has deterministic rules encoded in
+Python).
 
-This decision is advisory, not physical. The orchestrator respects
-it only because both halves are wired up. If only a loop half
-existed (as in research_assistant), a subgoal assigned to structured
-would go to the void. That's failure mode #4 from the course slides.
+This is advisory, not physical — the orchestrator respects the
+assignment only because both halves are wired up in the bridge. The
+key insight from my run is that "round 2" means the loop half ran
+first, produced a result, and the structured half then confirmed it.
+The handoff is the seam between non-deterministic reasoning and
+deterministic policy enforcement.
 
-The broader lesson: the planner makes an architectural decision
-based on prose interpretation. Put the rules somewhere the LLM
-cannot mis-assign — in the structured half's Python — and prose
-ambiguity no longer matters.
+If the planner mis-assigns a subgoal — say, sends a policy-enforcement
+task to the loop half — the LLM might hallucinate a confirmation
+instead of applying the actual rules. The structured half's Python
+is the source of truth; prose interpretation is just routing.
 
 ### Citation
 
-- sessions/sess_a382a2149fc1/logs/tickets/tk_*/raw_output.json
-- sessions/sess_a382a2149fc1/logs/trace.jsonl:23
+- sess_94fd867e614b (Ex7 offline run, bridge completed 2 rounds)
 
 ---
 
@@ -33,26 +34,28 @@ ambiguity no longer matters.
 
 ### Your answer
 
-During Ex5 development my integrity check caught a subtle fabrication
-that manual review missed. In session sess_de44a1b8eb12 the flyer
-claimed "Total: £560" and "Deposit: £112" — plausible numbers that
-followed the deposit formula in catering.json. I skimmed and moved on.
+In session sess_fddbe53e87c5 (Ex5 real mode), the Qwen executor
+spiralled: it called venue_search 8 times with wrong parameters
+(party_size=10 instead of 6, area="Edinburgh City Center" instead
+of "Haymarket"), never finding results. The trace shows each call
+returning "0 result(s)" and the executor retrying with minor
+variations rather than moving on to get_weather or calculate_cost.
 
-verify_dataflow returned ok=False with unverified_facts=['£560','£112'].
-The trace showed calculate_cost returned total_gbp=540, deposit=0. The
-real total was £540 under the £300 deposit threshold. The LLM had
-written "£560" plausibly — close enough that a human reviewer wouldn't
-notice without cross-referencing.
+The dataflow integrity check would have caught any fabrication had
+the LLM invented a venue result and proceeded to generate a flyer —
+verify_dataflow compares every £ amount and temperature in the flyer
+against _TOOL_CALL_LOG. Since no flyer was written the check never
+ran, but the spiral itself is a dataflow failure: the executor never
+produced the ground-truth data that generate_flyer needs.
 
-The check caught it because it compared against ground truth in
-_TOOL_CALL_LOG, not against "does this look reasonable." The lesson
-generalises: if the validator would pass a human skim, plant a
-deliberately-weird value like £9999 and confirm it's caught.
+The lesson: integrity checks protect against fabrication, but they
+cannot protect against the LLM getting stuck before producing data.
+Both failure modes (spiral and fabrication) are real; the offline
+FakeLLMClient masks the spiral by scripting the correct tool calls.
 
 ### Citation
 
-- sessions/sess_de44a1b8eb12/workspace/flyer.md:12
-- sessions/sess_de44a1b8eb12/logs/trace.jsonl:15
+- sess_fddbe53e87c5/logs/trace.jsonl (8 venue_search calls, 0 results each)
 
 ---
 
@@ -60,20 +63,27 @@ deliberately-weird value like £9999 and confirm it's caught.
 
 ### Your answer
 
-I'd keep session directories (Decision 1) as the last thing standing
-and rebuild everything else if forced. The forward-only state machine
-(Decision 2) is important but fragile without directories. Tickets
-(Decision 3) I could rebuild as .jsonl files inside the session.
-Atomic-rename IPC (Decision 5) is replaceable by directory polling.
+I'd keep session directories as the last thing standing. My Ex8 run
+(sess_452094cd7463) shows why: the trace.jsonl captured both sides
+of the conversation — user utterances and Alasdair's replies — with
+timestamps. Without the session directory, that exchange would be
+gone the moment the process exited.
 
-Session directories are the irreplaceable piece. Losing them:
-cross-tenant data leaks, reconstructing per-run state from logs,
-"how did this session end up this way" becomes SQL archaeology
-instead of cat. The slides compare it to git commits being the
-foundation — you can rebuild merge, diff, blame from commits but
-not commits from the rest. Session directories are commits.
+The forward-only state machine and tickets are useful but
+reconstructable: tickets are .json files inside the session, and
+the state machine is just a policy on how to read them. Atomic-rename
+IPC is replaceable by polling. But session directories are the
+atomic unit of "what happened in this run" — lose them and you lose
+the ability to narrate, debug, or grade any session.
+
+In my Ex5 offline run the session was written to a temp directory
+that was deleted after the process exited. I could not read the
+trace later. The persistent sessions (Ex5 real, Ex8) survived because
+they were written to the sovereign-agent data directory. That
+difference — ephemeral vs persistent — is exactly why session
+directories are the irreplaceable primitive.
 
 ### Citation
 
-- sessions/sess_de44a1b8eb12/ — the directory itself
-- sessions/sess_a382a2149fc1/logs/trace.jsonl
+- sess_452094cd7463/logs/trace.jsonl (Ex8 conversation trace)
+- sess_fddbe53e87c5/logs/trace.jsonl (Ex5 real mode spiral)
