@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "from_half": "loop",
+  "to_half": "structured",
+  "written_at": "2026-05-24T03:17:33.054402+00:00",
+  "session_id": "sess_808e102d664a",
+  "reason": "Need venue details to draft flyer",
+  "context": "No files found in workspace. Cannot proceed without venue data.",
+  "data": {},
+  "return_instructions": ""
+}

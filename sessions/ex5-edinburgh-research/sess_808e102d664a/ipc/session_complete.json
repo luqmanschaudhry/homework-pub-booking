@@ -1,0 +1,25 @@
+{
+  "session_id": "sess_808e102d664a",
+  "result": {
+    "venue": {
+      "id": "royal_oak",
+      "name": "The Royal Oak",
+      "address": "1 Infirmary St, Edinburgh EH1 1LT",
+      "contact": {
+        "email": "royal-oak@example.invalid"
+      },
+      "capacity": {
+        "seats_evening": 16
+      },
+      "pricing": {
+        "hire_fee_gbp": 50,
+        "min_spend_gbp": 400
+      },
+      "amenities": {
+        "licensed_hours": "11:00-01:00",
+        "accepts_card": true,
+        "outdoor_space": false
+      }
+    }
+  }
+}

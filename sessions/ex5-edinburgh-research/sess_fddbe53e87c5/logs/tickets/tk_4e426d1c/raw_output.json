@@ -1,0 +1,33 @@
+[
+  {
+    "id": "sg_1",
+    "description": "Search for potential venues in Edinburgh using a venue search tool",
+    "success_criterion": "List of at least 3 venues with basic details (name, location)",
+    "estimated_tool_calls": 1,
+    "depends_on": [],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_2",
+    "description": "Gather detailed information (price, capacity, amenities) for each venue from the list",
+    "success_criterion": "Detailed data for each venue in the list",
+    "estimated_tool_calls": 3,
+    "depends_on": [
+      "sg_1"
+    ],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_3",
+    "description": "Draft a professional flyer highlighting key features of the selected venue",
+    "success_criterion": "Completed flyer document with venue details and appealing content",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_2"
+    ],
+    "assigned_half": "loop",
+    "status": "pending"
+  }
+]

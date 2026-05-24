@@ -1,0 +1,4 @@
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-24T02:59:51.584823+00:00", "payload": {"text": "Hi, I'd like to book a table for 6 people on the 25th of April", "turn": 0, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-24T03:00:03.427258+00:00", "payload": {"text": "Aye, we can do that. I'll pencil you in for 25th April. What's the contact number?", "turn": 0, "mode": "text"}}
+{"event_type": "voice.utterance_in", "actor": "user", "timestamp": "2026-05-24T03:00:29.763337+00:00", "payload": {"text": "012345678", "turn": 1, "mode": "text"}}
+{"event_type": "voice.utterance_out", "actor": "manager", "timestamp": "2026-05-24T03:00:41.982850+00:00", "payload": {"text": "Got it, 012345678. See you on the 25th.", "turn": 1, "mode": "text"}}
