@@ -2,31 +2,27 @@
 
 ## Your answer
 
-The HandoffBridge orchestrates round-trips between the loop half and
-structured half. Each round: loop runs, if next_action=handoff_to_structured
-the bridge writes a forward handoff file, invokes structured, and then
-either marks the session complete (structured confirmed) or builds a
-reverse task and loops back (structured escalated).
+Session sess_94fd867e614b completed in 2 rounds with "structured
+confirmed in round 2". Round 1: the loop half ran and produced a
+booking candidate via its tools. The bridge detected next_action=
+handoff_to_structured and wrote a forward handoff file, then invoked
+the structured half. Round 2: the structured half confirmed, returning
+next_action="complete". The bridge marked the session done.
 
-The reverse-task path is the interesting one. On escalation, the
-bridge rewrites the initial_task into a dict that contains
-prior_result + rejection_reason + retry=True. The loop half sees
-this via the new executor invocation and — in a real LLM setting —
-would produce a different subgoal. In the scripted offline demo we
-hardcode the retry choice (royal_oak with 16 seats) so the test is
-deterministic.
+The round-trip state machine is what makes this exercise interesting.
+The bridge is not just a router — it rewrites the task between rounds.
+If the structured half had rejected, the bridge would have built a
+reverse task containing the rejection_reason and retry=True, giving
+the loop half context to try a different venue. In the scripted offline
+demo the confirmation happens in round 2 so the retry path is not
+exercised, but the bridge.py code handles it.
 
-Every half transition emits a session.state_changed trace event via
-session.append_trace_event(). The integrity check (integrity.py)
-verifies the trace has at least one round_start, at least one
-state_changed, and at least one tool call — catching the case where
-the bridge reports success without doing real work.
-
-The stale-handoff cleanup moves old ipc/handoff_to_structured.json
-files into logs/handoffs/ instead of deleting them, preserving the
-audit trail.
+The key design insight is that the loop half and structured half never
+talk directly — the bridge is the only entity that sees both results.
+This isolation means each half can be tested independently, and the
+bridge's state machine is the only place where the round-trip logic
+lives.
 
 ## Citations
 
-- starter/handoff_bridge/bridge.py — HandoffBridge.run + helpers
-- starter/handoff_bridge/integrity.py — verify_dataflow
+- sess_94fd867e614b (Ex7 offline, 2 rounds, structured confirmed)

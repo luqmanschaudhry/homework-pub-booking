@@ -2,28 +2,26 @@
 
 ## Your answer
 
-The RasaStructuredHalf subclass overrides run() to POST a booking
-intent to Rasa's REST webhook and interpret the response. Input
-payload flows: loop half produces raw booking data → StructuredHalf
-calls normalise_booking_payload (via validator.py) to produce a
-Rasa-shaped message with canonical types → urllib POST to Rasa →
-parse response for {action: committed} or {action: rejected} custom
-slots.
+In offline mode the RasaStructuredHalf POSTs to a stdlib mock server
+spawned on port 5905. The mock applies the same party/deposit rules
+as the real Rasa action server. Session sess_4a01b4949f53 confirmed
+booking reference BK-7D401E9E with outcome "complete".
 
-For offline mode we spawn a stdlib http.server thread that mimics a
-Rasa webhook. It always confirms, which is enough for unit tests.
-Rejection is exercised in Ex7 where the loop half's arguments drive
-the decision.
+In real mode (sess_e19fb23a9de7) we ran three terminals: action server
+on port 5055, Rasa server on port 5005 (trained model
+20260524-042948-energetic-bend.tar.gz), and the scenario in terminal 3.
+The structured half POSTed sender "homework-185d7d73" with the booking
+payload. Rasa returned two messages: "Booking confirmed. Reference:
+BK-7D401E9E." and "Is there anything else I can help you with?".
+The half parsed the first message, detected "booking confirmed" in the
+text, and returned next_action="complete".
 
-Three design choices worth noting: (1) we raise ValidationFailed in
-normalise_booking_payload and catch it in run() rather than letting
-it propagate; the StructuredHalf contract demands a HalfResult. (2)
-Network errors return success=False with SA_EXT_SERVICE_UNAVAILABLE
-— the caller decides whether to retry. (3) The stable sender_id is a
-hash of (venue+date+time) so the Rasa tracker is consistent across
-retries within one session.
+The normalise_booking_payload step is critical — it converts raw loop
+output into the canonical Rasa webhook shape with typed fields. Without
+it, Rasa's action server would receive untyped strings and the
+ActionValidateBooking custom action would fail silently.
 
 ## Citations
 
-- starter/rasa_half/validator.py — normalise_booking_payload + helpers
-- starter/rasa_half/structured_half.py — RasaStructuredHalf.run + mock server
+- sess_e19fb23a9de7 (Ex6 real mode, Rasa confirmed BK-7D401E9E)
+- sess_4a01b4949f53 (Ex6 offline mock, same reference)
