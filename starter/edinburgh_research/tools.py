@@ -15,6 +15,7 @@ def _load_json(filename: str) -> dict | list:
     path = _SAMPLE_DATA / filename
     if not path.exists():
         from sovereign_agent.tools.errors import ToolError
+
         raise ToolError("SA_TOOL_DEPENDENCY_MISSING", f"Missing fixture: {filename}")
     with open(path) as f:
         return json.load(f)
@@ -29,7 +30,8 @@ def venue_search(near: str, party_size: int, budget_max_gbp: int = 1000) -> Tool
     venues = _load_json("venues.json")
 
     results = [
-        v for v in venues
+        v
+        for v in venues
         if v["open_now"]
         and near.lower() in v["area"].lower()
         and v["seats_available_evening"] >= party_size
@@ -42,7 +44,11 @@ def venue_search(near: str, party_size: int, budget_max_gbp: int = 1000) -> Tool
         "results": results,
         "count": len(results),
     }
-    record_tool_call("venue_search", {"near": near, "party_size": party_size, "budget_max_gbp": budget_max_gbp}, output)
+    record_tool_call(
+        "venue_search",
+        {"near": near, "party_size": party_size, "budget_max_gbp": budget_max_gbp},
+        output,
+    )
     return ToolResult(
         success=True,
         output=output,
@@ -63,13 +69,17 @@ def get_weather(city: str, date: str) -> ToolResult:
     if city_data is None:
         output = {"error": f"Unknown city: {city}"}
         record_tool_call("get_weather", {"city": city, "date": date}, output)
-        return ToolResult(success=False, output=output, summary=f"get_weather({city}, {date}): city not found")
+        return ToolResult(
+            success=False, output=output, summary=f"get_weather({city}, {date}): city not found"
+        )
 
     day_data = city_data.get(date)
     if day_data is None:
         output = {"error": f"No data for {city} on {date}"}
         record_tool_call("get_weather", {"city": city, "date": date}, output)
-        return ToolResult(success=False, output=output, summary=f"get_weather({city}, {date}): date not found")
+        return ToolResult(
+            success=False, output=output, summary=f"get_weather({city}, {date}): date not found"
+        )
 
     output = {"city": city, "date": date, **day_data}
     record_tool_call("get_weather", {"city": city, "date": date}, output)
@@ -97,8 +107,19 @@ def calculate_cost(
     venue = next((v for v in venues if v["id"] == venue_id), None)
     if venue is None:
         output = {"error": f"Unknown venue: {venue_id}"}
-        record_tool_call("calculate_cost", {"venue_id": venue_id, "party_size": party_size, "duration_hours": duration_hours, "catering_tier": catering_tier}, output)
-        return ToolResult(success=False, output=output, summary=f"calculate_cost({venue_id}): venue not found")
+        record_tool_call(
+            "calculate_cost",
+            {
+                "venue_id": venue_id,
+                "party_size": party_size,
+                "duration_hours": duration_hours,
+                "catering_tier": catering_tier,
+            },
+            output,
+        )
+        return ToolResult(
+            success=False, output=output, summary=f"calculate_cost({venue_id}): venue not found"
+        )
 
     base_per_head = catering["base_rates_gbp_per_head"][catering_tier]
     venue_mult = catering["venue_modifiers"].get(venue_id, 1.0)
@@ -106,7 +127,6 @@ def calculate_cost(
     service = int(subtotal * catering["service_charge_percent"] / 100)
     total = subtotal + service + venue["hire_fee_gbp"] + venue["min_spend_gbp"]
 
-    policy = catering["deposit_policy"]
     if total < 300:
         deposit = 0
     elif total <= 1000:
@@ -124,7 +144,16 @@ def calculate_cost(
         "total_gbp": total,
         "deposit_required_gbp": deposit,
     }
-    record_tool_call("calculate_cost", {"venue_id": venue_id, "party_size": party_size, "duration_hours": duration_hours, "catering_tier": catering_tier}, output)
+    record_tool_call(
+        "calculate_cost",
+        {
+            "venue_id": venue_id,
+            "party_size": party_size,
+            "duration_hours": duration_hours,
+            "catering_tier": catering_tier,
+        },
+        output,
+    )
     return ToolResult(
         success=True,
         output=output,
@@ -157,21 +186,21 @@ def generate_flyer(session: Session, event_details: dict) -> ToolResult:
 <body>
 <h1>🍺 Edinburgh Pub Event</h1>
 <dl>
-  <dt>Venue</dt><dd data-testid="venue_name">{d.get('venue_name', '')}</dd>
-  <dt>Address</dt><dd data-testid="venue_address">{d.get('venue_address', '')}</dd>
-  <dt>Date</dt><dd data-testid="date">{d.get('date', '')}</dd>
-  <dt>Time</dt><dd data-testid="time">{d.get('time', '')}</dd>
-  <dt>Party size</dt><dd data-testid="party_size">{d.get('party_size', '')}</dd>
+  <dt>Venue</dt><dd data-testid="venue_name">{d.get("venue_name", "")}</dd>
+  <dt>Address</dt><dd data-testid="venue_address">{d.get("venue_address", "")}</dd>
+  <dt>Date</dt><dd data-testid="date">{d.get("date", "")}</dd>
+  <dt>Time</dt><dd data-testid="time">{d.get("time", "")}</dd>
+  <dt>Party size</dt><dd data-testid="party_size">{d.get("party_size", "")}</dd>
 </dl>
 <div class="weather">
   <strong>🌤 Weather forecast:</strong>
-  <span data-testid="condition">{d.get('condition', '')}</span>,
-  <span data-testid="temperature_c">{d.get('temperature_c', '')}C</span>
+  <span data-testid="condition">{d.get("condition", "")}</span>,
+  <span data-testid="temperature_c">{d.get("temperature_c", "")}C</span>
 </div>
 <div class="cost">
   <strong>💷 Cost breakdown:</strong><br>
-  Total: <span data-testid="total_gbp">£{d.get('total_gbp', '')}</span><br>
-  Deposit required: <span data-testid="deposit_required_gbp">£{d.get('deposit_required_gbp', '')}</span>
+  Total: <span data-testid="total_gbp">£{d.get("total_gbp", "")}</span><br>
+  Deposit required: <span data-testid="deposit_required_gbp">£{d.get("deposit_required_gbp", "")}</span>
 </div>
 </body>
 </html>"""
@@ -197,52 +226,115 @@ def build_tool_registry(session: Session) -> ToolRegistry:
 
     reg = make_builtin_registry(session)
 
-    reg.register(_RegisteredTool(
-        name="venue_search",
-        description="Search Edinburgh venues by area, party size, and max budget.",
-        fn=venue_search,
-        parameters_schema={"type": "object", "properties": {"near": {"type": "string"}, "party_size": {"type": "integer"}, "budget_max_gbp": {"type": "integer", "default": 1000}}, "required": ["near", "party_size"]},
-        returns_schema={"type": "object"},
-        is_async=False,
-        parallel_safe=True,
-        examples=[{"input": {"near": "Haymarket", "party_size": 6, "budget_max_gbp": 800}, "output": {"count": 1, "results": [{"id": "haymarket_tap"}]}}],
-    ))
+    reg.register(
+        _RegisteredTool(
+            name="venue_search",
+            description="Search Edinburgh venues by area, party size, and max budget.",
+            fn=venue_search,
+            parameters_schema={
+                "type": "object",
+                "properties": {
+                    "near": {"type": "string"},
+                    "party_size": {"type": "integer"},
+                    "budget_max_gbp": {"type": "integer", "default": 1000},
+                },
+                "required": ["near", "party_size"],
+            },
+            returns_schema={"type": "object"},
+            is_async=False,
+            parallel_safe=True,
+            examples=[
+                {
+                    "input": {"near": "Haymarket", "party_size": 6, "budget_max_gbp": 800},
+                    "output": {"count": 1, "results": [{"id": "haymarket_tap"}]},
+                }
+            ],
+        )
+    )
 
-    reg.register(_RegisteredTool(
-        name="get_weather",
-        description="Get scripted weather for a city on a YYYY-MM-DD date.",
-        fn=get_weather,
-        parameters_schema={"type": "object", "properties": {"city": {"type": "string"}, "date": {"type": "string"}}, "required": ["city", "date"]},
-        returns_schema={"type": "object"},
-        is_async=False,
-        parallel_safe=True,
-        examples=[{"input": {"city": "Edinburgh", "date": "2026-04-25"}, "output": {"condition": "cloudy", "temperature_c": 12}}],
-    ))
+    reg.register(
+        _RegisteredTool(
+            name="get_weather",
+            description="Get scripted weather for a city on a YYYY-MM-DD date.",
+            fn=get_weather,
+            parameters_schema={
+                "type": "object",
+                "properties": {"city": {"type": "string"}, "date": {"type": "string"}},
+                "required": ["city", "date"],
+            },
+            returns_schema={"type": "object"},
+            is_async=False,
+            parallel_safe=True,
+            examples=[
+                {
+                    "input": {"city": "Edinburgh", "date": "2026-04-25"},
+                    "output": {"condition": "cloudy", "temperature_c": 12},
+                }
+            ],
+        )
+    )
 
-    reg.register(_RegisteredTool(
-        name="calculate_cost",
-        description="Compute total cost and deposit for a booking.",
-        fn=calculate_cost,
-        parameters_schema={"type": "object", "properties": {"venue_id": {"type": "string"}, "party_size": {"type": "integer"}, "duration_hours": {"type": "integer"}, "catering_tier": {"type": "string", "enum": ["drinks_only", "bar_snacks", "sit_down_meal", "three_course_meal"], "default": "bar_snacks"}}, "required": ["venue_id", "party_size", "duration_hours"]},
-        returns_schema={"type": "object"},
-        is_async=False,
-        parallel_safe=True,
-        examples=[{"input": {"venue_id": "haymarket_tap", "party_size": 6, "duration_hours": 3}, "output": {"total_gbp": 540, "deposit_required_gbp": 0}}],
-    ))
+    reg.register(
+        _RegisteredTool(
+            name="calculate_cost",
+            description="Compute total cost and deposit for a booking.",
+            fn=calculate_cost,
+            parameters_schema={
+                "type": "object",
+                "properties": {
+                    "venue_id": {"type": "string"},
+                    "party_size": {"type": "integer"},
+                    "duration_hours": {"type": "integer"},
+                    "catering_tier": {
+                        "type": "string",
+                        "enum": ["drinks_only", "bar_snacks", "sit_down_meal", "three_course_meal"],
+                        "default": "bar_snacks",
+                    },
+                },
+                "required": ["venue_id", "party_size", "duration_hours"],
+            },
+            returns_schema={"type": "object"},
+            is_async=False,
+            parallel_safe=True,
+            examples=[
+                {
+                    "input": {"venue_id": "haymarket_tap", "party_size": 6, "duration_hours": 3},
+                    "output": {"total_gbp": 540, "deposit_required_gbp": 0},
+                }
+            ],
+        )
+    )
 
     def _flyer_adapter(event_details: dict) -> ToolResult:
         return generate_flyer(session, event_details)
 
-    reg.register(_RegisteredTool(
-        name="generate_flyer",
-        description="Write an HTML flyer for the event to workspace/flyer.html.",
-        fn=_flyer_adapter,
-        parameters_schema={"type": "object", "properties": {"event_details": {"type": "object"}}, "required": ["event_details"]},
-        returns_schema={"type": "object"},
-        is_async=False,
-        parallel_safe=False,
-        examples=[{"input": {"event_details": {"venue_name": "Haymarket Tap", "date": "2026-04-25", "party_size": 6}}, "output": {"path": "workspace/flyer.html"}}],
-    ))
+    reg.register(
+        _RegisteredTool(
+            name="generate_flyer",
+            description="Write an HTML flyer for the event to workspace/flyer.html.",
+            fn=_flyer_adapter,
+            parameters_schema={
+                "type": "object",
+                "properties": {"event_details": {"type": "object"}},
+                "required": ["event_details"],
+            },
+            returns_schema={"type": "object"},
+            is_async=False,
+            parallel_safe=False,
+            examples=[
+                {
+                    "input": {
+                        "event_details": {
+                            "venue_name": "Haymarket Tap",
+                            "date": "2026-04-25",
+                            "party_size": 6,
+                        }
+                    },
+                    "output": {"path": "workspace/flyer.html"},
+                }
+            ],
+        )
+    )
 
     return reg
 
