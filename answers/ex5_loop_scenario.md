@@ -4,24 +4,26 @@
 
 The planner produced two subgoals: sg_1 (research venues near Haymarket
 for a party of 6) and sg_2 (produce an HTML flyer), both assigned to
-the loop half. In offline mode (sess_b79ef5c953c5) the FakeLLMClient
-scripted the correct tool sequence.
+the loop half. In offline mode (FakeLLMClient) the scripted tool
+sequence ran cleanly: venue_search, get_weather, calculate_cost in
+parallel (all parallel_safe=True), then generate_flyer
+(parallel_safe=False), then complete_task.
 
-Turn 1 called venue_search, get_weather, and calculate_cost — all
-parallel_safe=True because they only read JSON fixtures. Turn 2 called
-generate_flyer (parallel_safe=False, writes a file). Turn 3 called
-complete_task. The loop half outcome was "complete" with the flyer
-written to workspace/flyer.html (1410 bytes).
+In real mode (sess_4928cdae3a61, Llama-3.3-70B executor), the planner
+produced 3 subgoals and the executor called venue_search, get_weather,
+calculate_cost, and generate_flyer across sg_1 through sg_3. The
+dataflow integrity check verified 4 facts against _TOOL_CALL_LOG:
+£437 total, £87 deposit, 12°C temperature, and "cloudy" condition —
+all matching tool outputs exactly.
 
-The dataflow integrity check verified 4 facts against _TOOL_CALL_LOG:
-the £ amounts, temperature, and weather condition in the flyer all
-matched tool outputs exactly. In real mode (sess_fddbe53e87c5), Qwen
-spiralled — calling venue_search 8 times with party_size=10 instead
-of 6, never finding results, exhausting max_turns=8. The integrity
-check never ran because no flyer was written. This shows the offline
-scripted mode is essential for reliable grading.
+During development the spiral defense caught Qwen/Qwen3-32B looping
+on venue_search 8 times (sess_fddbe53e87c5) with wrong parameters
+(party_size=10, area="Edinburgh City Center"). The tool-level counter
+returns an error after 3 calls forcing the LLM to use haymarket_tap
+directly. The type coercion fix (int(party_size)) was needed because
+the LLM passed "6" as a string, causing a TypeError in calculate_cost.
 
 ## Citations
 
-- sess_b79ef5c953c5 (Ex5 offline, dataflow OK, 4 facts verified)
-- sess_fddbe53e87c5/logs/trace.jsonl (Ex5 real, 8 spiral calls)
+- sess_4928cdae3a61/logs/trace.jsonl (Ex5 real, 4 facts verified)
+- sess_fddbe53e87c5/logs/trace.jsonl (spiral: 8 venue_search calls)

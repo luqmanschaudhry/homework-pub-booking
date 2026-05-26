@@ -40,6 +40,12 @@ def record_tool_call(tool_name: str, arguments: dict, output: dict) -> None:
 
 def clear_log() -> None:
     _TOOL_CALL_LOG.clear()
+    try:
+        from starter.edinburgh_research.tools import _reset_spiral_counter
+
+        _reset_spiral_counter()
+    except ImportError:
+        pass
 
 
 @dataclass

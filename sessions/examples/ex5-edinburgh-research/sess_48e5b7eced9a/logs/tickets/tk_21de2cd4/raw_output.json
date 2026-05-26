@@ -1,0 +1,50 @@
+{
+  "subgoal_id": "sg_1",
+  "success": true,
+  "final_answer": "(handoff requested)",
+  "tool_calls_made": [
+    {
+      "name": "venue_search",
+      "arguments": {
+        "near": "Edinburgh",
+        "party_size": 10
+      },
+      "success": true,
+      "summary": "venue_search(Edinburgh, party=10): 0 result(s)",
+      "requires_human_approval": false
+    },
+    {
+      "name": "calculate_cost",
+      "arguments": {
+        "venue_id": "haymarket_tap",
+        "party_size": 10,
+        "duration_hours": 2
+      },
+      "success": true,
+      "summary": "calculate_cost(haymarket_tap, 10): total \u00a3596, deposit \u00a3119",
+      "requires_human_approval": false
+    },
+    {
+      "name": "handoff_to_structured",
+      "arguments": {
+        "reason": "Retrieve venue details for 'haymarket_tap' (name, address, capacity, amenities)",
+        "context": "Edinburgh venue selection for flyer creation",
+        "data": {
+          "venue_id": "haymarket_tap"
+        }
+      },
+      "success": true,
+      "summary": "handoff to structured half: Retrieve venue details for 'haymarket_tap' (name, address, capacity, amenities)",
+      "requires_human_approval": false
+    }
+  ],
+  "turns_used": 3,
+  "handoff_requested": true,
+  "handoff_payload": {
+    "reason": "Retrieve venue details for 'haymarket_tap' (name, address, capacity, amenities)",
+    "context": "Edinburgh venue selection for flyer creation",
+    "data": {
+      "venue_id": "haymarket_tap"
+    }
+  }
+}

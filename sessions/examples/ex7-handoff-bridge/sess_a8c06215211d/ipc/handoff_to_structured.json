@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "from_half": "loop",
+  "to_half": "structured",
+  "written_at": "2026-05-26T03:21:03.944753+00:00",
+  "session_id": "sess_a8c06215211d",
+  "reason": "loop-half requested confirmation",
+  "context": "executor requested handoff to structured from sg_1",
+  "data": {
+    "subgoal_id": "sg_1",
+    "executor_results": [
+      {
+        "subgoal_id": "sg_1",
+        "success": true,
+        "final_answer": "(handoff requested)",
+        "turns_used": 3,
+        "tool_calls_made": [
+          {
+            "name": "read_file",
+            "arguments": {
+              "path": "proposal.txt"
+            },
+            "success": false,
+            "summary": "[SA_IO_NOT_FOUND] file not found in workspace: proposal.txt",
+            "requires_human_approval": false
+          },
+          {
+            "name": "list_files",
+            "arguments": {
+              "path": "."
+            },
+            "success": true,
+            "summary": ".: 0 entries",
+            "requires_human_approval": false
+          },
+          {
+            "name": "handoff_to_structured",
+            "arguments": {
+              "reason": "No proposal file found",
+              "context": "Retrieving previous proposal",
+              "data": {}
+            },
+            "success": true,
+            "summary": "handoff to structured half: No proposal file found",
+            "requires_human_approval": false
+          }
+        ],
+        "handoff_requested": true
+      }
+    ]
+  },
+  "return_instructions": "If you cannot confirm (party too large, deposit too high, etc.), respond with next_action=escalate and include a human-readable 'reason' in output so the loop half can adapt.",
+  "constraints_reminder": null
+}

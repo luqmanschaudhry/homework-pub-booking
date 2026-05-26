@@ -1,0 +1,21 @@
+{
+  "ticket_id": "tk_419b6dde",
+  "operation": "planner.plan",
+  "started_at": "2026-05-26T03:17:32.377003+00:00",
+  "completed_at": "2026-05-26T03:17:39.348032+00:00",
+  "duration_ms": 6971,
+  "outputs": [
+    {
+      "path": "C:\\Users\\dsk03\\Downloads\\homework-pub-booking\\sessions\\examples\\ex7-handoff-bridge\\sess_33a6a691d3db\\logs\\tickets\\tk_419b6dde\\raw_output.json",
+      "sha256": "9acf4d4bef91d7fc32c01893f3c4c4eede61beb63580e77bc1f6d18ce926374e",
+      "size_bytes": 852,
+      "content_type": "application/json"
+    }
+  ],
+  "metrics": {
+    "num_subgoals": 3,
+    "llm_tokens_in": 297,
+    "llm_tokens_out": 208,
+    "llm_model": "meta-llama/Llama-3.3-70B-Instruct"
+  }
+}

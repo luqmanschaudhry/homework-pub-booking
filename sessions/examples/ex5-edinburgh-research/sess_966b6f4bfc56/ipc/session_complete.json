@@ -1,0 +1,4 @@
+{
+  "session_id": "sess_966b6f4bfc56",
+  "result": "{\"success\": true, \"output\": {\"path\": \"workspace/flyer.html\", \"bytes_written\": 1367}, \"summary\": \"generate_flyer: wrote workspace/flyer.html (1367 chars)\", \"error\": null, \"requires_human_approval\": false}"
+}

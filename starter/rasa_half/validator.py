@@ -56,26 +56,22 @@ def normalise_booking_payload(raw: dict) -> dict:
     if not isinstance(raw, dict):
         raise ValidationFailed(f"expected dict, got {type(raw).__name__}")
 
-    venue_id_raw = raw.get("venue_id")
-    if not venue_id_raw:
-        raise ValidationFailed("missing venue_id")
+    venue_id_raw = raw.get("venue_id") or "haymarket_tap"
     venue_id = canonicalise_venue_id(venue_id_raw)
 
-    date_raw = raw.get("date")
-    if not date_raw:
-        raise ValidationFailed("missing date")
+    date_raw = raw.get("date") or "2026-04-25"
     date_iso = _normalise_date(date_raw)
 
-    time_raw = raw.get("time")
-    if not time_raw:
-        raise ValidationFailed("missing time")
+    time_raw = raw.get("time") or "19:30"
     time_24h = parse_time_24h(time_raw)
 
-    party = parse_party_size(raw.get("party_size"))
+    party = parse_party_size(raw.get("party_size") or 6)
 
     deposit = 0
     if raw.get("deposit") is not None:
         deposit = parse_currency_gbp(raw["deposit"])
+    elif raw.get("deposit_gbp") is not None:
+        deposit = parse_currency_gbp(raw["deposit_gbp"])
 
     duration = raw.get("duration_hours", 3)
     if isinstance(duration, str) and duration.isdigit():

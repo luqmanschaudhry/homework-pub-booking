@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "from_half": "loop",
+  "to_half": "structured",
+  "written_at": "2026-05-26T02:46:20.778887+00:00",
+  "session_id": "sess_bff48c133450",
+  "reason": "Unable to find a suitable venue using the venue_search function",
+  "context": "Research and select a suitable venue in Edinburgh with key details (name, location, capacity, price, amenities)",
+  "data": {
+    "function": "venue_search",
+    "arguments": {
+      "near": "Edinburgh city centre",
+      "party_size": 50
+    }
+  },
+  "return_instructions": ""
+}

@@ -2,27 +2,31 @@
 
 ## Your answer
 
-Session sess_94fd867e614b completed in 2 rounds with "structured
-confirmed in round 2". Round 1: the loop half ran and produced a
-booking candidate via its tools. The bridge detected next_action=
-handoff_to_structured and wrote a forward handoff file, then invoked
-the structured half. Round 2: the structured half confirmed, returning
-next_action="complete". The bridge marked the session done.
+In offline mode (sess_a648a59eb17d) the bridge completed in 2 rounds.
+Round 1: loop called venue_search(near="Haymarket", party_size=12),
+found 0 results, then called handoff_to_structured with venue_id=
+"Haymarket Tap". The mock Rasa rejected with "party_too_large"
+(party=12 > cap=8). The bridge wrote a reverse handoff and started
+round 2. Round 2: loop searched Old Town for party=6, found royal_oak
+(16 seats), handed off again. Structured confirmed. The trace shows
+4 session.state_changed events: loop→structured (round 1),
+structured→loop (round 1, rejection), loop→structured (round 2),
+structured→complete (round 2).
 
-The round-trip state machine is what makes this exercise interesting.
-The bridge is not just a router — it rewrites the task between rounds.
-If the structured half had rejected, the bridge would have built a
-reverse task containing the rejection_reason and retry=True, giving
-the loop half context to try a different venue. In the scripted offline
-demo the confirmation happens in round 2 so the retry path is not
-exercised, but the bridge.py code handles it.
+In real mode (sess_a7b13b18df6d, Llama-3.3-70B), the bridge completed
+in 1 round. The executor called venue_search, then handoff_to_structured
+with the booking data. The mock Rasa confirmed immediately since
+party_size=6 is within policy limits (≤8) and deposit was £0 (≤£300).
+The bridge marked the session complete after round 1.
 
-The key design insight is that the loop half and structured half never
-talk directly — the bridge is the only entity that sees both results.
-This isolation means each half can be tested independently, and the
-bridge's state machine is the only place where the round-trip logic
-lives.
+The key design insight: the validator (normalise_booking_payload) is
+the seam between non-deterministic loop output and deterministic
+structured policy. In real mode the LLM passed incomplete data
+(missing date, time) — the validator fills in defaults rather than
+rejecting, making the bridge robust to LLM variability without
+compromising the policy enforcement in ActionValidateBooking.
 
 ## Citations
 
-- sess_94fd867e614b (Ex7 offline, 2 rounds, structured confirmed)
+- sess_a648a59eb17d/logs/trace.jsonl (offline, 2 rounds, 4 state changes)
+- sess_a7b13b18df6d (real mode, completed round 1)

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "from_half": "loop",
+  "to_half": "structured",
+  "written_at": "2026-05-26T02:48:22.278078+00:00",
+  "session_id": "sess_101ba86a6f8d",
+  "reason": "No results found",
+  "context": "Edinburgh venue search",
+  "data": {},
+  "return_instructions": ""
+}

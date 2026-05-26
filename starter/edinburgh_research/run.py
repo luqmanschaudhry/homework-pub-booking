@@ -199,24 +199,39 @@ async def run_scenario(real: bool) -> int:
         session = create_session(
             scenario="edinburgh-research",
             task=(
-                "Research an Edinburgh pub and produce an HTML event flyer.\n\n"
-                "Context:\n"
-                "  - party size: 6\n"
-                "  - date: 2026-04-25 (a Saturday)\n"
-                "  - time: 19:30\n"
-                "  - area: near Haymarket station, Edinburgh\n\n"
-                "REQUIRED tool sequence (all four tools MUST run, in order):\n"
-                "  1. venue_search(near='Haymarket', party_size=6, budget_max_gbp=800)\n"
-                "  2. get_weather(city='edinburgh', date='2026-04-25')\n"
-                "  3. calculate_cost(venue_id=<chosen pub's id>, party_size=6,\n"
-                "                    duration_hours=3, catering_tier='bar_snacks')\n"
-                "  4. generate_flyer(event_details={...})  <-- MUST be called\n"
-                "  5. complete_task(result={'flyer': 'workspace/flyer.html', ...})\n\n"
-                "Do NOT call complete_task until you have called generate_flyer. "
-                "The scenario is graded by the existence of workspace/flyer.html, "
-                "not by your final text response. The flyer is HTML — exact tool "
-                "names and argument shapes are in each tool's docstring; call them "
-                "exactly as described."
+                "Research an Edinburgh pub booking and write a flyer. "
+                "Follow ALL steps below. Use ONLY party_size=6.\n\n"
+                "STEP 1 — call venue_search:\n"
+                "  venue_search(near='Haymarket', party_size=6, budget_max_gbp=800)\n"
+                "  → note the venue id, name, address from the result\n\n"
+                "STEP 2 — call get_weather:\n"
+                "  get_weather(city='edinburgh', date='2026-04-25')\n"
+                "  → note condition and temperature_c from the result\n\n"
+                "STEP 3 — call calculate_cost:\n"
+                "  calculate_cost(venue_id=<id from step 1>, party_size=6,\n"
+                "                 duration_hours=3, catering_tier='bar_snacks')\n"
+                "  → note total_gbp and deposit_required_gbp from the result\n\n"
+                "STEP 4 — call generate_flyer with the ACTUAL values from steps 1-3:\n"
+                "  generate_flyer(event_details={\n"
+                "    'venue_name': <actual name from step 1>,\n"
+                "    'venue_address': <actual address from step 1>,\n"
+                "    'date': '2026-04-25',\n"
+                "    'time': '19:30',\n"
+                "    'party_size': 6,\n"
+                "    'condition': <actual condition from step 2>,\n"
+                "    'temperature_c': <actual number from step 2>,\n"
+                "    'total_gbp': <actual number from step 3>,\n"
+                "    'deposit_required_gbp': <actual number from step 3>\n"
+                "  })\n"
+                "  ALL fields must be filled with real values from the tool outputs.\n"
+                "  Empty strings are NOT acceptable.\n\n"
+                "STEP 5 — call complete_task.\n\n"
+                "CRITICAL RULES:\n"
+                "- party_size is ALWAYS 6. Never use any other value.\n"
+                "- Do NOT call handoff_to_structured.\n"
+                "- Do NOT call complete_task before generate_flyer.\n"
+                "- Every field in event_details MUST contain the actual value "
+                "returned by the tool, not an empty string.\n"
             ),
             sessions_dir=sessions_root,
         )
@@ -247,7 +262,20 @@ async def run_scenario(real: bool) -> int:
             executor=DefaultExecutor(model=executor_model, client=client, tools=tools),  # type: ignore[arg-type]
         )
 
-        result = await half.run(session, {"task": "research Edinburgh venue and write flyer"})
+        result = await half.run(
+            session,
+            {
+                "task": (
+                    "Call these 4 tools in order, then complete_task:\n"
+                    "1. venue_search(near='Haymarket', party_size=6, budget_max_gbp=800)\n"
+                    "2. get_weather(city='edinburgh', date='2026-04-25')\n"
+                    "3. calculate_cost(venue_id=<id from step 1>, party_size=6, duration_hours=3, catering_tier='bar_snacks')\n"
+                    "4. generate_flyer(event_details={all fields from steps 1-3})\n"
+                    "5. complete_task\n"
+                    "Do NOT call complete_task before generate_flyer. party_size is always 6."
+                )
+            },
+        )
         print(f"\nLoop half outcome: {result.next_action}")
         print(f"  summary: {result.summary}")
 

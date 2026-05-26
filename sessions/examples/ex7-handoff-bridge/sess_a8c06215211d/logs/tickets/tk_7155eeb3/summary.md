@@ -1,0 +1,1 @@
+Executor completed subgoal sg_1 in 5 turn(s). Made 4 tool call(s): list_files, list_files, handoff_to_structured, complete_task.

@@ -1,0 +1,20 @@
+{
+  "ticket_id": "tk_98458c79",
+  "operation": "executor.run_subgoal/sg_2",
+  "started_at": "2026-05-26T03:17:27.639350+00:00",
+  "completed_at": "2026-05-26T03:17:32.354804+00:00",
+  "duration_ms": 4715,
+  "outputs": [
+    {
+      "path": "C:\\Users\\dsk03\\Downloads\\homework-pub-booking\\sessions\\examples\\ex7-handoff-bridge\\sess_33a6a691d3db\\logs\\tickets\\tk_98458c79\\raw_output.json",
+      "sha256": "069d7ed028a77d7c95900dfc30f0b53fa287a099fb919f39d396510f1d8c6904",
+      "size_bytes": 738,
+      "content_type": "application/json"
+    }
+  ],
+  "metrics": {
+    "tool_calls": 2,
+    "turns_used": 3,
+    "handoff_requested": false
+  }
+}

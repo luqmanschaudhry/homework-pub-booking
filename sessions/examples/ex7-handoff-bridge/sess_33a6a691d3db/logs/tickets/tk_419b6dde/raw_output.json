@@ -1,0 +1,33 @@
+[
+  {
+    "id": "sg_1",
+    "description": "Retrieve the list of available venue IDs",
+    "success_criterion": "A list of venue IDs is returned",
+    "estimated_tool_calls": 1,
+    "depends_on": [],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_2",
+    "description": "Select a suitable venue ID to add to the proposal",
+    "success_criterion": "A venue ID is chosen and added to the proposal",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_1"
+    ],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_3",
+    "description": "Re-submit the revised proposal for review",
+    "success_criterion": "The revised proposal is successfully submitted",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_2"
+    ],
+    "assigned_half": "structured",
+    "status": "pending"
+  }
+]

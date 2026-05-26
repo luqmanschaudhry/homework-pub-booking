@@ -1,0 +1,21 @@
+{
+  "ticket_id": "tk_fd8107db",
+  "operation": "planner.plan",
+  "started_at": "2026-05-26T02:56:21.630592+00:00",
+  "completed_at": "2026-05-26T02:56:33.499365+00:00",
+  "duration_ms": 11868,
+  "outputs": [
+    {
+      "path": "C:\\Users\\dsk03\\Downloads\\homework-pub-booking\\sessions\\examples\\ex5-edinburgh-research\\sess_109b865f47fb\\logs\\tickets\\tk_fd8107db\\raw_output.json",
+      "sha256": "db2c21c796f973a7654bcf12c11372d1dbf708bc7144c4c306af6381f2182766",
+      "size_bytes": 1374,
+      "content_type": "application/json"
+    }
+  ],
+  "metrics": {
+    "num_subgoals": 5,
+    "llm_tokens_in": 400,
+    "llm_tokens_out": 356,
+    "llm_model": "meta-llama/Llama-3.3-70B-Instruct"
+  }
+}

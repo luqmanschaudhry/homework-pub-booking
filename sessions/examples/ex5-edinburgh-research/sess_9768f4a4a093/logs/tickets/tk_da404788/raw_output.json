@@ -1,0 +1,38 @@
+{
+  "subgoal_id": "sg_2",
+  "success": true,
+  "final_answer": "(handoff requested)",
+  "tool_calls_made": [
+    {
+      "name": "list_files",
+      "arguments": {
+        "path": "."
+      },
+      "success": true,
+      "summary": ".: 0 entries",
+      "requires_human_approval": false
+    },
+    {
+      "name": "handoff_to_structured",
+      "arguments": {
+        "reason": "Workspace has no files with venue details. Need structured input to proceed.",
+        "context": "Drafting flyer requires venue name/location/features not found in workspace.",
+        "data": {
+          "fallback_venue_id": "haymarket_tap"
+        }
+      },
+      "success": true,
+      "summary": "handoff to structured half: Workspace has no files with venue details. Need structured input to proceed.",
+      "requires_human_approval": false
+    }
+  ],
+  "turns_used": 2,
+  "handoff_requested": true,
+  "handoff_payload": {
+    "reason": "Workspace has no files with venue details. Need structured input to proceed.",
+    "context": "Drafting flyer requires venue name/location/features not found in workspace.",
+    "data": {
+      "fallback_venue_id": "haymarket_tap"
+    }
+  }
+}

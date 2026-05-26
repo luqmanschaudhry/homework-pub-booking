@@ -31,10 +31,9 @@ focused on open-ended research.
 
 ### Citation
 
-- sess_a648a59eb17d/logs/trace.jsonl — handoff_to_structured call,
-  session.state_changed events (loop→structured round 1,
-  structured→loop round 1, loop→structured round 2,
-  structured→complete round 2)
+- sess_a648a59eb17d/logs/trace.jsonl — handoff_to_structured calls,
+  session.state_changed events (4 transitions across 2 rounds)
+- sess_a7b13b18df6d — real mode, confirmed in round 1
 
 ---
 

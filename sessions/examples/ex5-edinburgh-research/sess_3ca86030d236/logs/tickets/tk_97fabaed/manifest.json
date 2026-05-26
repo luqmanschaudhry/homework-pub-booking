@@ -1,0 +1,21 @@
+{
+  "ticket_id": "tk_97fabaed",
+  "operation": "planner.plan",
+  "started_at": "2026-05-26T02:38:28.475953+00:00",
+  "completed_at": "2026-05-26T02:38:54.954059+00:00",
+  "duration_ms": 26478,
+  "outputs": [
+    {
+      "path": "C:\\Users\\dsk03\\Downloads\\homework-pub-booking\\sessions\\examples\\ex5-edinburgh-research\\sess_3ca86030d236\\logs\\tickets\\tk_97fabaed\\raw_output.json",
+      "sha256": "eb31fd2f82819aad55f31715be79549007325609ae84f10376af9594bcd97287",
+      "size_bytes": 762,
+      "content_type": "application/json"
+    }
+  ],
+  "metrics": {
+    "num_subgoals": 2,
+    "llm_tokens_in": 262,
+    "llm_tokens_out": 4063,
+    "llm_model": "Qwen/Qwen3-Next-80B-A3B-Thinking"
+  }
+}

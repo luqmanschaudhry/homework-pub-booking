@@ -1,0 +1,29 @@
+{
+  "subgoal_id": "sg_2",
+  "success": true,
+  "final_answer": "The weather for Edinburgh on 2026-04-25 is cloudy with a temperature of 12C, 0.0mm of precipitation, and a wind speed of 15kph.",
+  "tool_calls_made": [
+    {
+      "name": "get_weather",
+      "arguments": {
+        "city": "Edinburgh",
+        "date": "2026-04-25"
+      },
+      "success": true,
+      "summary": "get_weather(Edinburgh, 2026-04-25): cloudy, 12C",
+      "requires_human_approval": false
+    },
+    {
+      "name": "complete_task",
+      "arguments": {
+        "result": "{\"city\": \"Edinburgh\", \"date\": \"2026-04-25\", \"condition\": \"cloudy\", \"temperature_c\": 12, \"precip_mm\": 0.0, \"wind_kph\": 15}"
+      },
+      "success": true,
+      "summary": "session marked complete",
+      "requires_human_approval": false
+    }
+  ],
+  "turns_used": 3,
+  "handoff_requested": false,
+  "handoff_payload": null
+}

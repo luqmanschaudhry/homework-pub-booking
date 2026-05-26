@@ -1,0 +1,59 @@
+{
+  "subgoal_id": "sg_1",
+  "success": true,
+  "final_answer": "(handoff requested)",
+  "tool_calls_made": [
+    {
+      "name": "venue_search",
+      "arguments": {
+        "near": "Edinburgh city centre",
+        "party_size": "50",
+        "budget_max_gbp": "500"
+      },
+      "success": true,
+      "summary": "venue_search(Edinburgh city centre, party=50): 0 result(s)",
+      "requires_human_approval": false
+    },
+    {
+      "name": "venue_search",
+      "arguments": {
+        "near": "Edinburgh city centre",
+        "party_size": "50",
+        "budget_max_gbp": "1000"
+      },
+      "success": false,
+      "summary": "[SA_TOOL_INVALID_INPUT] invalid arguments to tool venue_search: '>=' not supported between instances of 'int' and 'str'",
+      "requires_human_approval": false
+    },
+    {
+      "name": "handoff_to_structured",
+      "arguments": {
+        "reason": "Unable to find a suitable venue using the venue_search function",
+        "context": "Research and select a suitable venue in Edinburgh with key details (name, location, capacity, price, amenities)",
+        "data": {
+          "function": "venue_search",
+          "arguments": {
+            "near": "Edinburgh city centre",
+            "party_size": 50
+          }
+        }
+      },
+      "success": true,
+      "summary": "handoff to structured half: Unable to find a suitable venue using the venue_search function",
+      "requires_human_approval": false
+    }
+  ],
+  "turns_used": 3,
+  "handoff_requested": true,
+  "handoff_payload": {
+    "reason": "Unable to find a suitable venue using the venue_search function",
+    "context": "Research and select a suitable venue in Edinburgh with key details (name, location, capacity, price, amenities)",
+    "data": {
+      "function": "venue_search",
+      "arguments": {
+        "near": "Edinburgh city centre",
+        "party_size": 50
+      }
+    }
+  }
+}

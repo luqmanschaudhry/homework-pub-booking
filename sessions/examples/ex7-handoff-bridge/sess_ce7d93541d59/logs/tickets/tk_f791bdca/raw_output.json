@@ -1,0 +1,9 @@
+{
+  "subgoal_id": "sg_1",
+  "success": true,
+  "final_answer": "I am not able to execute this task as it exceeds the limitations of the functions I have been given.",
+  "tool_calls_made": [],
+  "turns_used": 1,
+  "handoff_requested": false,
+  "handoff_payload": null
+}

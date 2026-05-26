@@ -1,0 +1,30 @@
+{
+  "subgoal_id": "sg_2",
+  "success": true,
+  "final_answer": "The final answer is: $\\boxed{royal\\_oak}$",
+  "tool_calls_made": [
+    {
+      "name": "venue_search",
+      "arguments": {
+        "near": "city center",
+        "party_size": "10",
+        "budget_max_gbp": "500"
+      },
+      "success": true,
+      "summary": "venue_search(city center, party=10): 3 result(s)",
+      "requires_human_approval": false
+    },
+    {
+      "name": "complete_task",
+      "arguments": {
+        "result": "{\"venue_id\": \"royal_oak\"}"
+      },
+      "success": true,
+      "summary": "session marked complete",
+      "requires_human_approval": false
+    }
+  ],
+  "turns_used": 3,
+  "handoff_requested": false,
+  "handoff_payload": null
+}

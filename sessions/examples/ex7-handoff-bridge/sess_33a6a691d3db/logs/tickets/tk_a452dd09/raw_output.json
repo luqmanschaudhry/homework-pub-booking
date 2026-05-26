@@ -1,0 +1,33 @@
+[
+  {
+    "id": "sg_1",
+    "description": "Find available restaurants in Haymarket that can accommodate a party of 6",
+    "success_criterion": "List of available restaurants with seating for 6",
+    "estimated_tool_calls": 2,
+    "depends_on": [],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_2",
+    "description": "Check reviews and ratings of the available restaurants to select the best option",
+    "success_criterion": "Selected restaurant with good reviews and ratings",
+    "estimated_tool_calls": 2,
+    "depends_on": [
+      "sg_1"
+    ],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_3",
+    "description": "Book a table for 6 at the selected restaurant",
+    "success_criterion": "Confirmation of booking",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_2"
+    ],
+    "assigned_half": "structured",
+    "status": "pending"
+  }
+]

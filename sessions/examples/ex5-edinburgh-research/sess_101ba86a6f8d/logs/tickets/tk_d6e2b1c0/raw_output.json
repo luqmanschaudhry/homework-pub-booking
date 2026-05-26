@@ -1,0 +1,45 @@
+{
+  "subgoal_id": "sg_1",
+  "success": true,
+  "final_answer": "(handoff requested)",
+  "tool_calls_made": [
+    {
+      "name": "list_files",
+      "arguments": {
+        "path": "edinburgh_venues"
+      },
+      "success": true,
+      "summary": "edinburgh_venues has no entries (does not exist)",
+      "requires_human_approval": false
+    },
+    {
+      "name": "venue_search",
+      "arguments": {
+        "near": "Edinburgh",
+        "party_size": "10",
+        "budget_max_gbp": "1000"
+      },
+      "success": true,
+      "summary": "venue_search(Edinburgh, party=10): 0 result(s)",
+      "requires_human_approval": false
+    },
+    {
+      "name": "handoff_to_structured",
+      "arguments": {
+        "reason": "No results found",
+        "context": "Edinburgh venue search",
+        "data": {}
+      },
+      "success": true,
+      "summary": "handoff to structured half: No results found",
+      "requires_human_approval": false
+    }
+  ],
+  "turns_used": 3,
+  "handoff_requested": true,
+  "handoff_payload": {
+    "reason": "No results found",
+    "context": "Edinburgh venue search",
+    "data": {}
+  }
+}

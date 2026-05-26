@@ -125,37 +125,70 @@ async def run_scenario(real: bool) -> int:
     with example_sessions_dir("ex7-handoff-bridge", persist=real) as sessions_root:
         session = create_session(
             scenario="ex7-handoff-bridge",
-            task="Book a venue for 12 people in Haymarket, Friday 19:30.",
+            task="Book a venue for a party of 6 in Edinburgh, Friday 19:30.",
             sessions_dir=sessions_root,
         )
         print(f"Session {session.session_id}")
         print(f"  dir: {session.directory}")
 
-        # Spawn mock Rasa unless --real
-        server = None
-        if not real:
-            server, _thread, mock_url = spawn_mock_rasa(port=5906)
-            rasa_half = RasaStructuredHalf(rasa_url=mock_url)
-        else:
-            rasa_half = RasaStructuredHalf()
+        server, _thread, mock_url = spawn_mock_rasa(port=5906)
+        rasa_half = RasaStructuredHalf(rasa_url=mock_url)
 
-        client = _build_fake_client_two_rounds()
         tools = build_tool_registry(session)
-        loop_half = LoopHalf(
-            planner=DefaultPlanner(model="fake", client=client),
-            executor=DefaultExecutor(model="fake", client=client, tools=tools),  # type: ignore[arg-type]
-        )
+
+        if real:
+            from dotenv import load_dotenv
+
+            load_dotenv()
+            from sovereign_agent._internal.llm_client import OpenAICompatibleClient
+            from sovereign_agent.config import Config
+
+            cfg = Config.from_env()
+            print(f"  LLM: {cfg.llm_base_url} (live)")
+            print(f"  planner:  {cfg.llm_planner_model}")
+            print(f"  executor: {cfg.llm_executor_model}")
+            llm_client = OpenAICompatibleClient(
+                base_url=cfg.llm_base_url,
+                api_key_env=cfg.llm_api_key_env,
+            )
+            loop_half = LoopHalf(
+                planner=DefaultPlanner(model=cfg.llm_planner_model, client=llm_client),
+                executor=DefaultExecutor(
+                    model=cfg.llm_executor_model, client=llm_client, tools=tools
+                ),
+            )
+        else:
+            client = _build_fake_client_two_rounds()
+            loop_half = LoopHalf(
+                planner=DefaultPlanner(model="fake", client=client),
+                executor=DefaultExecutor(model="fake", client=client, tools=tools),  # type: ignore[arg-type]
+            )
+
         bridge = HandoffBridge(
             loop_half=loop_half,
             structured_half=rasa_half,
-            max_rounds=3,
+            max_rounds=5,
+        )
+
+        task = (
+            "book for party of 6 in Haymarket"
+            if not real
+            else (
+                "You are booking a pub venue in Edinburgh for a party of 6 people.\n"
+                "STEP 1: Call venue_search(near='Haymarket', party_size=6, budget_max_gbp=800)\n"
+                "STEP 2: Call calculate_cost for the chosen venue\n"
+                "STEP 3: Call handoff_to_structured with data={'action': 'confirm_booking', "
+                "'venue_id': <id>, 'date': '2026-04-25', 'time': '19:30', "
+                "'party_size': 6, 'deposit_gbp': <deposit>, 'duration_hours': 3, "
+                "'catering_tier': 'bar_snacks'}\n"
+                "Do NOT call complete_task. Call handoff_to_structured to confirm the booking."
+            )
         )
 
         try:
-            result = await bridge.run(session, {"task": "book for party of 12 in Haymarket"})
+            result = await bridge.run(session, {"task": task})
         finally:
-            if server is not None:
-                server.shutdown()
+            server.shutdown()
 
         print(f"\nBridge outcome: {result.outcome}")
         print(f"  rounds: {result.rounds}")

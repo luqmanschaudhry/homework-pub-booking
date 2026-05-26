@@ -1,0 +1,29 @@
+{
+  "subgoal_id": "sg_1",
+  "success": true,
+  "final_answer": "The final answer is: $\\boxed{[{\"id\": \"haymarket_tap\", \"name\": \"Haymarket Tap\"}, {\"id\": \"royal_oak\", \"name\": \"The Royal Oak\"}, {\"id\": \"bennets_bar\", \"name\": \"Bennet's Bar\"}, {\"id\": \"cafe_royal\", \"name\": \"Cafe Royal\"}]}$",
+  "tool_calls_made": [
+    {
+      "name": "venue_search",
+      "arguments": {
+        "near": "Edinburgh",
+        "party_size": "6"
+      },
+      "success": true,
+      "summary": "venue_search(Edinburgh, party=6): 4 result(s)",
+      "requires_human_approval": false
+    },
+    {
+      "name": "complete_task",
+      "arguments": {
+        "result": "{\"venues\": [{\"id\": \"haymarket_tap\", \"name\": \"Haymarket Tap\"}, {\"id\": \"royal_oak\", \"name\": \"The Royal Oak\"}, {\"id\": \"bennets_bar\", \"name\": \"Bennet's Bar\"}, {\"id\": \"cafe_royal\", \"name\": \"Cafe Royal\"}]}"
+      },
+      "success": true,
+      "summary": "session marked complete",
+      "requires_human_approval": false
+    }
+  ],
+  "turns_used": 3,
+  "handoff_requested": false,
+  "handoff_payload": null
+}

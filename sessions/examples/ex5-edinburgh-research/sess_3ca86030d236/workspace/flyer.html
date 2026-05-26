@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Event Flyer</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 600px; margin: 40px auto; background: #fdf6e3; color: #333; padding: 20px; }
+  h1 { color: #8B4513; border-bottom: 2px solid #8B4513; padding-bottom: 10px; }
+  dl { display: grid; grid-template-columns: max-content auto; gap: 8px 20px; }
+  dt { font-weight: bold; color: #555; }
+  dd { margin: 0; }
+  .weather { background: #e8f4f8; padding: 10px; border-radius: 6px; margin: 16px 0; }
+  .cost { background: #f0f8e8; padding: 10px; border-radius: 6px; margin: 16px 0; }
+</style>
+</head>
+<body>
+<h1>🍺 Edinburgh Pub Event</h1>
+<dl>
+  <dt>Venue</dt><dd data-testid="venue_name">Haymarket Tap</dd>
+  <dt>Address</dt><dd data-testid="venue_address">12 Dalry Rd, Edinburgh EH11 2BG</dd>
+  <dt>Date</dt><dd data-testid="date"></dd>
+  <dt>Time</dt><dd data-testid="time"></dd>
+  <dt>Party size</dt><dd data-testid="party_size"></dd>
+</dl>
+<div class="weather">
+  <strong>🌤 Weather forecast:</strong>
+  <span data-testid="condition"></span>,
+  <span data-testid="temperature_c">C</span>
+</div>
+<div class="cost">
+  <strong>💷 Cost breakdown:</strong><br>
+  Total: <span data-testid="total_gbp">£</span><br>
+  Deposit required: <span data-testid="deposit_required_gbp">£</span>
+</div>
+</body>
+</html>

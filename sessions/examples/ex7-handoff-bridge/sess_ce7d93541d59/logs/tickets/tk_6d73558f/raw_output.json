@@ -1,0 +1,33 @@
+[
+  {
+    "id": "sg_1",
+    "description": "Find a suitable pub venue in Edinburgh for a party of 6 people",
+    "success_criterion": "A list of potential venues is returned",
+    "estimated_tool_calls": 1,
+    "depends_on": [],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_2",
+    "description": "Calculate the cost of the chosen venue",
+    "success_criterion": "The total cost of the venue is determined",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_1"
+    ],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_3",
+    "description": "Confirm the booking of the chosen venue",
+    "success_criterion": "The booking is successfully confirmed",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_2"
+    ],
+    "assigned_half": "structured",
+    "status": "pending"
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "subgoal_id": "sg_1",
+  "success": true,
+  "final_answer": "The final answer is: $\\boxed{haymarket_tap}$",
+  "tool_calls_made": [
+    {
+      "name": "venue_search",
+      "arguments": {
+        "near": "Haymarket",
+        "party_size": "6",
+        "budget_max_gbp": "800"
+      },
+      "success": true,
+      "summary": "venue_search(Haymarket, party=6): 1 result(s)",
+      "requires_human_approval": false
+    },
+    {
+      "name": "complete_task",
+      "arguments": {
+        "result": "{\"venue_id\": \"haymarket_tap\"}"
+      },
+      "success": true,
+      "summary": "session marked complete",
+      "requires_human_approval": false
+    }
+  ],
+  "turns_used": 3,
+  "handoff_requested": false,
+  "handoff_payload": null
+}

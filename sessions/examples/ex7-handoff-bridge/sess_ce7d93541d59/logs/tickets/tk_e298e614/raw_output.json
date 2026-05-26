@@ -1,0 +1,33 @@
+[
+  {
+    "id": "sg_1",
+    "description": "Check the Rasa server status to determine if it is running",
+    "success_criterion": "Rasa server status is confirmed",
+    "estimated_tool_calls": 1,
+    "depends_on": [],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_2",
+    "description": "Verify the Rasa server URL and port configuration",
+    "success_criterion": "Rasa server URL and port are confirmed correct",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_1"
+    ],
+    "assigned_half": "loop",
+    "status": "pending"
+  },
+  {
+    "id": "sg_3",
+    "description": "Attempt to reconnect to the Rasa server with the verified URL and port",
+    "success_criterion": "Connection to Rasa server is established",
+    "estimated_tool_calls": 1,
+    "depends_on": [
+      "sg_2"
+    ],
+    "assigned_half": "structured",
+    "status": "pending"
+  }
+]

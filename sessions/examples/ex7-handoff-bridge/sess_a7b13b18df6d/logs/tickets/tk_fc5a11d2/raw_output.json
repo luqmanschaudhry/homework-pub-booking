@@ -1,0 +1,22 @@
+{
+  "subgoal_id": "sg_2",
+  "success": true,
+  "final_answer": "The total cost of the venue is \u00a31190, with a deposit of \u00a3357.",
+  "tool_calls_made": [
+    {
+      "name": "calculate_cost",
+      "arguments": {
+        "venue_id": "haymarket_tap",
+        "party_size": "10",
+        "duration_hours": "5",
+        "catering_tier": "bar_snacks"
+      },
+      "success": true,
+      "summary": "calculate_cost(haymarket_tap, 10): total \u00a31190, deposit \u00a3357",
+      "requires_human_approval": false
+    }
+  ],
+  "turns_used": 2,
+  "handoff_requested": false,
+  "handoff_payload": null
+}

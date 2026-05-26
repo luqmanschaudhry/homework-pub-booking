@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "from_half": "loop",
+  "to_half": "structured",
+  "written_at": "2026-05-26T02:57:00.783241+00:00",
+  "session_id": "sess_109b865f47fb",
+  "reason": "calculate cost",
+  "context": "event planning",
+  "data": {
+    "venue_id": "haymarket_tap",
+    "party_size": 10,
+    "duration_hours": 5
+  },
+  "return_instructions": ""
+}
